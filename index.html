@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Water Monitor</title>
+    <style>
+        :root {
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --primary: #0f172a;
+            --text-main: #334155;
+            --text-light: #94a3b8;
+            
+            --safe: #22c55e;
+            --tap: #0ea5e9;
+            --unsafe: #ef4444;
+            --uncertain: #eab308;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        h1 { margin: 0; font-size: 1.25rem; font-weight: 800; color: var(--primary); }
+        .connection-dot {
+            height: 10px; width: 10px; background-color: #cbd5e1;
+            border-radius: 50%; display: inline-block;
+        }
+        .connected .connection-dot { background-color: var(--safe); box-shadow: 0 0 8px var(--safe); }
+
+        /* Main Result Circle */
+        .result-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .status-text { font-size: 2.5rem; font-weight: 900; margin: 10px 0; color: #cbd5e1; }
+        .confidence { font-size: 0.9rem; color: #94a3b8; font-weight: 600; }
+        .advice { font-size: 1rem; margin-top: 15px; color: var(--text-main); font-weight: 500; }
+
+        /* Data Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .metric-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 15px 10px;
+            text-align: center;
+            box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.05);
+        }
+        .metric-value { font-size: 1.2rem; font-weight: 700; color: var(--primary); }
+        .metric-label { font-size: 0.75rem; color: #64748b; margin-top: 5px; }
+
+        /* Connect Button */
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 16px;
+            width: 100%;
+            font-size: 1rem;
+            border-radius: 16px;
+            cursor: pointer;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
+            transition: transform 0.1s;
+        }
+        button:active { transform: scale(0.98); }
+        button:disabled { background-color: #cbd5e1; cursor: not-allowed; box-shadow: none; }
+
+        /* History Section */
+        .history-section {
+            margin-top: 30px;
+            width: 100%;
+        }
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .history-title { font-weight: 700; color: var(--primary); }
+        .history-actions button {
+            width: auto;
+            padding: 5px 12px;
+            font-size: 0.75rem;
+            background: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            box-shadow: none;
+            margin-left: 5px;
+        }
+
+        .history-list {
+            background: var(--card-bg);
+            border-radius: 16px;
+            max-height: 300px;
+            overflow-y: auto;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+        
+        .history-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+        }
+        .history-item:last-child { border-bottom: none; }
+        
+        .h-time { color: var(--text-light); font-size: 0.75rem; display: block; margin-bottom: 2px;}
+        .h-result { font-weight: 700; }
+        .h-data { font-size: 0.75rem; color: var(--text-main); }
+        
+        .badge {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .bg-safe { background: #dcfce7; color: #166534; }
+        .bg-tap { background: #e0f2fe; color: #075985; }
+        .bg-unsafe { background: #fee2e2; color: #991b1b; }
+        .bg-uncertain { background: #fef9c3; color: #854d0e; }
+
+
+        /* State Styles */
+        .state-safe .result-card { border: 2px solid var(--safe); background: #f0fdf4; }
+        .state-safe .status-text { color: var(--safe); }
+        
+        .state-tap .result-card { border: 2px solid var(--tap); background: #f0f9ff; }
+        .state-tap .status-text { color: var(--tap); }
+
+        .state-unsafe .result-card { border: 2px solid var(--unsafe); background: #fef2f2; }
+        .state-unsafe .status-text { color: var(--unsafe); }
+
+        .state-uncertain .result-card { border: 2px solid var(--uncertain); background: #fefce8; }
+        .state-uncertain .status-text { color: var(--uncertain); }
+
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <header>
+            <h1>💧 AI Water Monitor</h1>
+            <div id="connDot" class="connection-dot"></div>
+        </header>
+
+        <div id="mainCard" class="result-card">
+            <div class="confidence" id="confText">WAITING FOR SAMPLE</div>
+            <div class="status-text" id="resultText">--</div>
+            <div class="advice" id="adviceText">Connect device to start</div>
+        </div>
+
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-value" id="valTDS">--</div>
+                <div class="metric-label">TDS (ppm)</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value" id="valTurb">--</div>
+                <div class="metric-label">Turbidity</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value" id="valPH">--</div>
+                <div class="metric-label">pH Level</div>
+            </div>
+        </div>
+
+        <button id="connectBtn" onclick="connectToDevice()">Connect Device</button>
+
+        <!-- HISTORY SECTION -->
+        <div class="history-section">
+            <div class="history-header">
+                <div class="history-title">Data History</div>
+                <div class="history-actions">
+                    <button onclick="downloadCSV()">📥 Export CSV</button>
+                    <button onclick="clearHistory()" style="color: #ef4444; border-color: #ef4444;">🗑 Clear</button>
+                </div>
+            </div>
+            <div class="history-list" id="historyList">
+                <div style="padding: 20px; text-align: center; color: #94a3b8; font-size: 0.8rem;">No readings yet</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SERVICE_UUID = "19b10000-e8f2-537e-4f6c-d104768a1214";
+        const CHAR_UUID    = "19b10001-e8f2-537e-4f6c-d104768a1214";
+        let bluetoothDevice;
+        
+        // Load history from local storage
+        let dataHistory = JSON.parse(localStorage.getItem('waterDataHistory')) || [];
+        renderHistory();
+
+        async function connectToDevice() {
+            try {
+                bluetoothDevice = await navigator.bluetooth.requestDevice({
+                    filters: [{ services: [SERVICE_UUID] }] 
+                });
+                bluetoothDevice.addEventListener('gattserverdisconnected', onDisconnected);
+                const server = await bluetoothDevice.gatt.connect();
+                const service = await server.getPrimaryService(SERVICE_UUID);
+                const characteristic = await service.getCharacteristic(CHAR_UUID);
+
+                await characteristic.startNotifications();
+                characteristic.addEventListener('characteristicvaluechanged', handleData);
+
+                document.body.classList.add("connected");
+                document.getElementById("connectBtn").innerText = "Connected";
+                document.getElementById("connectBtn").disabled = true;
+                document.getElementById("adviceText").innerText = "Press button on device to scan";
+
+            } catch (error) {
+                console.log(error);
+                alert("Connection failed. Make sure device is on.");
+            }
+        }
+
+        function handleData(event) {
+            const jsonStr = new TextDecoder().decode(event.target.value);
+            console.log("Received:", jsonStr);
+
+            try {
+                const data = JSON.parse(jsonStr);
+                
+                // Update UI
+                document.getElementById("resultText").innerText = data.lbl.toUpperCase();
+                document.getElementById("confText").innerText = `AI CONFIDENCE: ${Math.round(data.conf * 100)}%`;
+                document.getElementById("valTDS").innerText = data.tds;
+                document.getElementById("valTurb").innerText = data.turb;
+                document.getElementById("valPH").innerText = data.ph;
+
+                const body = document.body;
+                body.className = "connected";
+                
+                let advice = "";
+                if (data.lbl === "safe") {
+                    body.classList.add("state-safe");
+                    advice = "✔ Safe for consumption.";
+                } else if (data.lbl === "tap") {
+                    body.classList.add("state-tap");
+                    advice = "ℹ Standard tap water.";
+                } else if (data.lbl === "unsafe") {
+                    body.classList.add("state-unsafe");
+                    advice = "⚠ DO NOT DRINK. Filtration required.";
+                } else {
+                    body.classList.add("state-uncertain");
+                    advice = "❓ Analysis inconclusive. Test again.";
+                }
+                document.getElementById("adviceText").innerText = advice;
+
+                // SAVE TO HISTORY
+                saveReading(data);
+
+            } catch (e) {
+                console.error("JSON Parse Error", e);
+            }
+        }
+
+        function saveReading(data) {
+            const reading = {
+                timestamp: new Date().toLocaleString(),
+                ...data
+            };
+            // Add to start of array
+            dataHistory.unshift(reading);
+            // Limit to 50 items
+            if (dataHistory.length > 50) dataHistory.pop();
+            
+            // Save to local storage
+            localStorage.setItem('waterDataHistory', JSON.stringify(dataHistory));
+            renderHistory();
+        }
+
+        function renderHistory() {
+            const list = document.getElementById('historyList');
+            list.innerHTML = "";
+
+            if (dataHistory.length === 0) {
+                list.innerHTML = '<div style="padding: 20px; text-align: center; color: #94a3b8; font-size: 0.8rem;">No readings yet</div>';
+                return;
+            }
+
+            dataHistory.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'history-item';
+                
+                let badgeClass = "bg-uncertain";
+                if(item.lbl === "safe") badgeClass = "bg-safe";
+                if(item.lbl === "tap") badgeClass = "bg-tap";
+                if(item.lbl === "unsafe") badgeClass = "bg-unsafe";
+
+                div.innerHTML = `
+                    <div>
+                        <span class="h-time">${item.timestamp}</span>
+                        <span class="badge ${badgeClass}">${item.lbl}</span>
+                    </div>
+                    <div class="h-data">
+                        TDS: ${item.tds} | Turb: ${item.turb} | pH: ${item.ph}
+                    </div>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        function downloadCSV() {
+            if (dataHistory.length === 0) return alert("No data to export!");
+            
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "Timestamp,Label,Confidence,TDS,Turbidity,pH\n"; // Header
+
+            dataHistory.forEach(row => {
+                csvContent += `${row.timestamp},${row.lbl},${row.conf},${row.tds},${row.turb},${row.ph}\n`;
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "water_quality_data.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function clearHistory() {
+            if(confirm("Clear all history?")) {
+                dataHistory = [];
+                localStorage.removeItem('waterDataHistory');
+                renderHistory();
+            }
+        }
+
+        function onDisconnected() {
+            document.body.className = "";
+            document.getElementById("connectBtn").innerText = "Connect Device";
+            document.getElementById("connectBtn").disabled = false;
+            document.getElementById("resultText").innerText = "--";
+            document.getElementById("confText").innerText = "WAITING FOR SAMPLE";
+            document.getElementById("adviceText").innerText = "Connect device to start";
+            document.getElementById("valTDS").innerText = "--";
+            document.getElementById("valTurb").innerText = "--";
+            document.getElementById("valPH").innerText = "--";
+        }
+    </script>
+</body>
+</html>
