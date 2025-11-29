@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Water Monitor (DEBUG)</title>
+    <title>AI Water Monitor</title>
     <style>
         :root {
             --bg-color: #f8fafc;
@@ -116,6 +116,64 @@
             box-shadow: inset 0 0 10px #000;
         }
 
+        /* History Section */
+        .history-section {
+            margin-top: 30px;
+            width: 100%;
+        }
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .history-title { font-weight: 700; color: var(--primary); }
+        .history-actions button {
+            width: auto;
+            padding: 5px 12px;
+            font-size: 0.75rem;
+            background: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            box-shadow: none;
+            margin-left: 5px;
+        }
+
+        .history-list {
+            background: var(--card-bg);
+            border-radius: 16px;
+            max-height: 300px;
+            overflow-y: auto;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+        
+        .history-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+        }
+        .history-item:last-child { border-bottom: none; }
+        
+        .h-time { color: var(--text-light); font-size: 0.75rem; display: block; margin-bottom: 2px;}
+        .h-result { font-weight: 700; }
+        .h-data { font-size: 0.75rem; color: var(--text-main); }
+        
+        .badge {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .bg-safe { background: #dcfce7; color: #166534; }
+        .bg-tap { background: #e0f2fe; color: #075985; }
+        .bg-unsafe { background: #fee2e2; color: #991b1b; }
+        .bg-uncertain { background: #fef9c3; color: #854d0e; }
+
+
         /* State Styles */
         .state-safe .result-card { border: 2px solid var(--safe); background: #f0fdf4; }
         .state-safe .status-text { color: var(--safe); }
@@ -162,44 +220,59 @@
 
         <button id="connectBtn" onclick="connectToDevice()">Connect Device</button>
 
-        <!-- DEBUG CONSOLE -->
+        <!-- DEBUG CONSOLE (Visible for testing, remove for final video if desired) -->
         <div class="debug-console" id="debugLog">
             > Ready to connect...<br>
+        </div>
+
+        <!-- HISTORY SECTION -->
+        <div class="history-section">
+            <div class="history-header">
+                <div class="history-title">Data History</div>
+                <div class="history-actions">
+                    <button onclick="downloadCSV()">📥 Export CSV</button>
+                    <button onclick="clearHistory()" style="color: #ef4444; border-color: #ef4444;">🗑 Clear</button>
+                </div>
+            </div>
+            <div class="history-list" id="historyList">
+                <div style="padding: 20px; text-align: center; color: #94a3b8; font-size: 0.8rem;">No readings yet</div>
+            </div>
         </div>
     </div>
 
     <script>
-        // These UUIDs MUST match the ones in your Arduino Code
         const SERVICE_UUID = "19b10000-e8f2-537e-4f6c-d104768a1214";
         const CHAR_UUID    = "19b10001-e8f2-537e-4f6c-d104768a1214";
         let bluetoothDevice;
         
+        // BUFFER for incoming data chunks
+        let dataBuffer = "";
+
         // Custom Logger Function
         function log(msg) {
             const consoleDiv = document.getElementById("debugLog");
             consoleDiv.innerHTML += `> ${msg}<br>`;
-            consoleDiv.scrollTop = consoleDiv.scrollHeight; // Auto-scroll to bottom
+            consoleDiv.scrollTop = consoleDiv.scrollHeight; 
             console.log(msg);
         }
+        
+        // Load history from local storage
+        let dataHistory = JSON.parse(localStorage.getItem('waterDataHistory')) || [];
+        renderHistory();
 
         async function connectToDevice() {
             try {
-                log("Requesting Bluetooth Device...");
+                log("Scanning...");
                 bluetoothDevice = await navigator.bluetooth.requestDevice({
                     filters: [{ services: [SERVICE_UUID] }] 
                 });
                 
                 bluetoothDevice.addEventListener('gattserverdisconnected', onDisconnected);
-                log("Connecting to GATT Server...");
+                log("Connecting...");
                 const server = await bluetoothDevice.gatt.connect();
-                
-                log("Getting Service...");
                 const service = await server.getPrimaryService(SERVICE_UUID);
-                
-                log("Getting Characteristic...");
                 const characteristic = await service.getCharacteristic(CHAR_UUID);
 
-                log("Subscribing...");
                 await characteristic.startNotifications();
                 characteristic.addEventListener('characteristicvaluechanged', handleData);
 
@@ -207,50 +280,134 @@
                 document.getElementById("connectBtn").innerText = "Connected";
                 document.getElementById("connectBtn").disabled = true;
                 document.getElementById("adviceText").innerText = "Press button on device to scan";
-                log("SUCCESS: Connected & Listening!");
+                log("CONNECTED!");
 
             } catch (error) {
-                log("CONNECTION ERROR: " + error);
+                log("ERROR: " + error);
             }
         }
 
         function handleData(event) {
+            // 1. Decode current chunk
+            const chunk = new TextDecoder().decode(event.target.value);
+            log("Rx Chunk: " + chunk); // Show fragments for debugging
+            
+            // 2. Append to Buffer
+            dataBuffer += chunk;
+
+            // 3. Try to Parse
             try {
-                const jsonStr = new TextDecoder().decode(event.target.value);
-                log("RECEIVED DATA: " + jsonStr); // SHOW RAW DATA
-
-                const data = JSON.parse(jsonStr);
-                log("Parsing Success. Label: " + data.lbl);
+                const data = JSON.parse(dataBuffer);
+                // IF WE REACH HERE, PARSING SUCCEEDED (Full Message Received)
                 
-                // Update UI
-                document.getElementById("resultText").innerText = data.lbl.toUpperCase();
-                document.getElementById("confText").innerText = `AI CONFIDENCE: ${Math.round(data.conf * 100)}%`;
-                document.getElementById("valTDS").innerText = data.tds;
-                document.getElementById("valTurb").innerText = data.turb;
-                document.getElementById("valPH").innerText = data.ph;
-
-                // Visuals
-                const body = document.body;
-                body.className = "connected"; 
+                log("PARSED OK: " + data.lbl);
+                updateUI(data);
+                saveReading(data);
                 
-                let advice = "";
-                if (data.lbl === "safe") {
-                    body.classList.add("state-safe");
-                    advice = "✔ Safe for consumption.";
-                } else if (data.lbl === "tap") {
-                    body.classList.add("state-tap");
-                    advice = "ℹ Standard tap water.";
-                } else if (data.lbl === "unsafe") {
-                    body.classList.add("state-unsafe");
-                    advice = "⚠ DO NOT DRINK. Filtration required.";
-                } else {
-                    body.classList.add("state-uncertain");
-                    advice = "❓ Analysis inconclusive. Test again.";
-                }
-                document.getElementById("adviceText").innerText = advice;
+                // Clear buffer only AFTER successful parse/save
+                dataBuffer = ""; 
 
             } catch (e) {
-                log("PARSE ERROR: " + e);
+                // JSON is incomplete, wait for next chunk
+                // Do NOT clear buffer
+            }
+        }
+
+        function updateUI(data) {
+            // Update Text
+            document.getElementById("resultText").innerText = data.lbl.toUpperCase();
+            document.getElementById("confText").innerText = `AI CONFIDENCE: ${Math.round(data.conf * 100)}%`;
+            document.getElementById("valTDS").innerText = data.tds;
+            document.getElementById("valTurb").innerText = data.turb;
+            document.getElementById("valPH").innerText = data.ph;
+
+            // Visuals
+            const body = document.body;
+            body.className = "connected";
+            
+            let advice = "";
+            if (data.lbl === "safe") {
+                body.classList.add("state-safe");
+                advice = "✔ Safe for consumption.";
+            } else if (data.lbl === "tap") {
+                body.classList.add("state-tap");
+                advice = "ℹ Standard tap water.";
+            } else if (data.lbl === "unsafe") {
+                body.classList.add("state-unsafe");
+                advice = "⚠ DO NOT DRINK. Filtration required.";
+            } else {
+                body.classList.add("state-uncertain");
+                advice = "❓ Analysis inconclusive. Test again.";
+            }
+            document.getElementById("adviceText").innerText = advice;
+        }
+
+        function saveReading(data) {
+            const reading = {
+                timestamp: new Date().toLocaleString(),
+                ...data
+            };
+            dataHistory.unshift(reading);
+            if (dataHistory.length > 50) dataHistory.pop();
+            localStorage.setItem('waterDataHistory', JSON.stringify(dataHistory));
+            renderHistory();
+        }
+
+        function renderHistory() {
+            const list = document.getElementById('historyList');
+            list.innerHTML = "";
+
+            if (dataHistory.length === 0) {
+                list.innerHTML = '<div style="padding: 20px; text-align: center; color: #94a3b8; font-size: 0.8rem;">No readings yet</div>';
+                return;
+            }
+
+            dataHistory.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'history-item';
+                
+                let badgeClass = "bg-uncertain";
+                if(item.lbl === "safe") badgeClass = "bg-safe";
+                if(item.lbl === "tap") badgeClass = "bg-tap";
+                if(item.lbl === "unsafe") badgeClass = "bg-unsafe";
+
+                div.innerHTML = `
+                    <div>
+                        <span class="h-time">${item.timestamp}</span>
+                        <span class="badge ${badgeClass}">${item.lbl}</span>
+                    </div>
+                    <div class="h-data">
+                        TDS: ${item.tds} | Turb: ${item.turb} | pH: ${item.ph}
+                    </div>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        function downloadCSV() {
+            if (dataHistory.length === 0) return alert("No data to export!");
+            
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "Timestamp,Label,Confidence,TDS,Turbidity,pH\n"; 
+
+            dataHistory.forEach(row => {
+                csvContent += `${row.timestamp},${row.lbl},${row.conf},${row.tds},${row.turb},${row.ph}\n`;
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "water_quality_data.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function clearHistory() {
+            if(confirm("Clear all history?")) {
+                dataHistory = [];
+                localStorage.removeItem('waterDataHistory');
+                renderHistory();
             }
         }
 
@@ -259,7 +416,12 @@
             document.getElementById("connectBtn").innerText = "Connect Device";
             document.getElementById("connectBtn").disabled = false;
             document.getElementById("resultText").innerText = "--";
-            log("Disconnected from device.");
+            document.getElementById("confText").innerText = "WAITING FOR SAMPLE";
+            document.getElementById("adviceText").innerText = "Connect device to start";
+            document.getElementById("valTDS").innerText = "--";
+            document.getElementById("valTurb").innerText = "--";
+            document.getElementById("valPH").innerText = "--";
+            log("Disconnected.");
         }
     </script>
 </body>
