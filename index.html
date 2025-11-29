@@ -109,7 +109,7 @@
             padding: 15px;
             border-radius: 12px;
             width: 100%;
-            height: 200px;
+            height: 150px;
             overflow-y: auto;
             text-align: left;
             border: 2px solid #333;
@@ -220,7 +220,7 @@
 
         <button id="connectBtn" onclick="connectToDevice()">Connect Device</button>
 
-        <!-- DEBUG CONSOLE (Visible for testing, remove for final video if desired) -->
+        <!-- DEBUG CONSOLE (Keep for now to confirm fix) -->
         <div class="debug-console" id="debugLog">
             > Ready to connect...<br>
         </div>
@@ -280,7 +280,7 @@
                 document.getElementById("connectBtn").innerText = "Connected";
                 document.getElementById("connectBtn").disabled = true;
                 document.getElementById("adviceText").innerText = "Press button on device to scan";
-                log("CONNECTED!");
+                log("CONNECTED! Waiting for data...");
 
             } catch (error) {
                 log("ERROR: " + error);
@@ -290,26 +290,39 @@
         function handleData(event) {
             // 1. Decode current chunk
             const chunk = new TextDecoder().decode(event.target.value);
-            log("Rx Chunk: " + chunk); // Show fragments for debugging
+            log("Rx Chunk: " + chunk); 
             
+            // --- SELF HEALING LOGIC ---
+            // If the chunk looks like the START of a new JSON object ('{'),
+            // but we already have data in the buffer, it means the previous
+            // message was incomplete/corrupted. We must clear it to avoid a jam.
+            if (chunk.trim().startsWith("{")) {
+                if (dataBuffer.length > 0) {
+                    log("Warning: Cleared corrupted buffer.");
+                }
+                dataBuffer = ""; // Reset buffer for new message
+            }
+            // --------------------------
+
             // 2. Append to Buffer
             dataBuffer += chunk;
 
             // 3. Try to Parse
             try {
-                const data = JSON.parse(dataBuffer);
-                // IF WE REACH HERE, PARSING SUCCEEDED (Full Message Received)
-                
-                log("PARSED OK: " + data.lbl);
-                updateUI(data);
-                saveReading(data);
-                
-                // Clear buffer only AFTER successful parse/save
-                dataBuffer = ""; 
-
+                // Only try parsing if it looks complete (ends with '}')
+                if (dataBuffer.trim().endsWith("}")) {
+                    const data = JSON.parse(dataBuffer);
+                    
+                    // IF WE REACH HERE, PARSING SUCCEEDED
+                    log("PARSED OK: " + data.lbl);
+                    updateUI(data);
+                    saveReading(data);
+                    
+                    // Clear buffer only AFTER successful parse/save
+                    dataBuffer = ""; 
+                }
             } catch (e) {
-                // JSON is incomplete, wait for next chunk
-                // Do NOT clear buffer
+                // JSON is not complete yet, wait for next chunk...
             }
         }
 
