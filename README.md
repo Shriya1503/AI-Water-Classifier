@@ -28,6 +28,8 @@ It reads data from three sensors simultaneously and uses a neural network to cla
 
 - ⚠️ Unsafe: Contaminated with biological matter, soap, salt, or extreme pH levels.
 
+  The datatset is collected from varies locations and for each samples few synthetic datapoints are added to make it more robust. Alsothere is some overlapping between Tap and Safe waters which is actually accurate as sometimes tap water are drinkable.This can be clearly seen in feature explorer graph on Edge Impulse. ![Feature Explorer](https://github.com/Shriya1503/AI-Water-Classifier/blob/19713001c579c1ae89c6bc9a82027c7b0be81898/Assets/FeatureExplorer.jpg)
+
 ## 🛠️ Hardware & Tech Stack
 
 	Component				Specification					Function
