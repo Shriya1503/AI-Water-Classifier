@@ -113,6 +113,13 @@ Pair: Click "Connect" and select WaterAI.( Need to be re-connected for every rea
 
 Test: Dip sensors in water and press the physical button.
 
+## 🔮 Future Roadmap
+
+* **🛠️ Custom PCB Integration:** Transition from breadboard prototyping to a custom-designed, miniaturized PCB that integrates the XIAO BLE, power management, and sensor interfaces into a single board.
+* **🖊️ "Smart Pen" Form Factor:** Design and 3D print a sleek, waterproof, pen-shaped enclosure. This "Probe-Pen" will house the battery, PCB, and sensors, making the device truly pocket-sized and field-deployable.
+* **🔋 Solar Autonomy:** Add micro-solar harvesting to extend battery life indefinitely for remote monitoring stations.
+* **📱 Native Mobile App:** Port the Web Bluetooth functionality to a native Flutter/Kotlin app for background monitoring and push notifications.
+
 📜 License
 
 This project is open-source under the MIT License.
