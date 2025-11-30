@@ -1,0 +1,101 @@
+Name,TDS,Turbidity,pH,label
+Water + Lemon Juice,515.2,15.5,3.2,unsafe
+Water + Lemon Juice,495.8,18.2,3.1,unsafe
+Water + Lemon Juice,535.1,14.9,3.3,unsafe
+Water + Lemon Juice,510,16.8,3,unsafe
+Water + Lemon Juice,522.4,17.5,2.9,unsafe
+Water + Lemon Juice,501.9,16.1,3.2,unsafe
+Water + Lemon Juice,540.3,15.2,3.1,unsafe
+Water + Lemon Juice,488.6,18.9,2.8,unsafe
+Water + Lemon Juice,518.7,17,3.3,unsafe
+Water + Lemon Juice,528,16.3,3,unsafe
+Water + Vinegar,455.3,8.1,3.6,unsafe
+Water + Vinegar,470.1,7.8,3.5,unsafe
+Water + Vinegar,445.8,9.5,3.7,unsafe
+Water + Vinegar,460.4,8,3.6,unsafe
+Water + Vinegar,452.9,8.7,3.5,unsafe
+Water + Vinegar,475,7.5,3.8,unsafe
+Water + Vinegar,440.2,9.9,3.6,unsafe
+Water + Vinegar,468.3,8.3,3.7,unsafe
+Water + Vinegar,448.6,9.1,3.5,unsafe
+Water + Vinegar,463.7,7.9,3.6,unsafe
+Water + Milk (trace),555.6,315.2,6.7,unsafe
+Water + Milk (trace),535.1,335.5,6.6,unsafe
+Water + Milk (trace),565.9,325.1,6.7,unsafe
+Water + Milk (trace),550.2,330,6.5,unsafe
+Water + Milk (trace),570.3,310.8,6.8,unsafe
+Water + Milk (trace),542.7,340.2,6.6,unsafe
+Water + Milk (trace),578,318.5,6.7,unsafe
+Water + Milk (trace),548.9,338.1,6.5,unsafe
+Water + Milk (trace),562.4,322.7,6.8,unsafe
+Water + Milk (trace),558.1,328.4,6.6,unsafe
+Water + Soy Sauce,430.1,402.5,4.8,unsafe
+Water + Soy Sauce,440.2,451.2,4.7,unsafe
+Water + Soy Sauce,430.3,480,4.9,unsafe
+Water + Soy Sauce,580.8,342.3,4.8,unsafe
+Water + Soy Sauce,500.5,443.1,5,unsafe
+Water + Soy Sauce,510.2,488.7,4.7,unsafe
+Water + Soy Sauce,520.7,481.9,4.9,unsafe
+Water + Soy Sauce,532.4,486.4,4.8,unsafe
+Water + Soy Sauce,490.9,570.8,5,unsafe
+Water + Soy Sauce,452.6,578.6,4.9,unsafe
+Stagnant Pond Water,615.2,270.3,6.8,unsafe
+Stagnant Pond Water,585.9,280.1,6.5,unsafe
+Stagnant Pond Water,635,275,7.1,unsafe
+Stagnant Pond Water,600.4,273.2,6.7,unsafe
+Stagnant Pond Water,622.7,265.9,7,unsafe
+Stagnant Pond Water,592.1,283.4,6.6,unsafe
+Stagnant Pond Water,640.8,278.6,7.2,unsafe
+Stagnant Pond Water,608.3,271,6.8,unsafe
+Stagnant Pond Water,628.9,267.5,7.1,unsafe
+Stagnant Pond Water,598.6,281.8,6.5,unsafe
+Dirty River Water,455.8,355.9,7.2,unsafe
+Dirty River Water,475.2,385.1,7,unsafe
+Dirty River Water,435.5,370,7.3,unsafe
+Dirty River Water,465.1,375.3,7.1,unsafe
+Dirty River Water,442.3,360.5,7.4,unsafe
+Dirty River Water,480,390.8,7,unsafe
+Dirty River Water,428.9,378.2,7.3,unsafe
+Dirty River Water,470.6,382.4,7.1,unsafe
+Dirty River Water,448.1,368.7,7.4,unsafe
+Dirty River Water,462.9,372,7.2,unsafe
+Aquarium Water,715,30.2,6.9,unsafe
+Aquarium Water,755.8,35.5,6.7,unsafe
+Aquarium Water,735.2,32,7,unsafe
+Aquarium Water,745.1,33.8,6.8,unsafe
+Aquarium Water,720.6,28.9,7.1,unsafe
+Aquarium Water,760.3,37.1,6.7,unsafe
+Aquarium Water,728.9,31.5,7,unsafe
+Aquarium Water,748.4,34.6,6.8,unsafe
+Aquarium Water,724.1,29.8,7.1,unsafe
+Aquarium Water,752,36.3,6.7,unsafe
+Water + Soap (trace),615.9,40.1,9.2,unsafe
+Water + Soap (trace),635.2,45.5,9.4,unsafe
+Water + Soap (trace),595,39,9.1,unsafe
+Water + Soap (concentrated),625.5,200,9.3,unsafe
+Water + Soap (concentrated),605.3,175.2,9,unsafe
+Water + Soap (concentrated),640.9,250.8,9.5,unsafe
+Water + Soap (concentrated),588.7,215.5,8.9,unsafe
+Water + Soap (concentrated),630.1,230.6,9.4,unsafe
+Water + Soap (concentrated),612.8,300.9,9.2,unsafe
+Water + Soap (concentrated),620,290.5,9.3,unsafe
+Swimming Pool Water,1050,2.1,7.6,unsafe
+Swimming Pool Water,980.2,1.9,7.5,unsafe
+Swimming Pool Water,980.8,2.3,7.7,unsafe
+Swimming Pool Water,930.1,2,7.6,unsafe
+Swimming Pool Water,910.5,2.5,7.8,unsafe
+Swimming Pool Water,900.7,1.8,7.5,unsafe
+Swimming Pool Water,910.2,2.7,7.7,unsafe
+Swimming Pool Water,960,1.7,7.6,unsafe
+Swimming Pool Water,930.3,2.4,7.8,unsafe
+Swimming Pool Water,990.9,2.2,7.5,unsafe
+Water + Salt,984.5,3.5,7.4,unsafe
+Water + Salt,980,3.2,7.3,unsafe
+Water + Salt,987.3,3.6,7.4,unsafe
+Water + Salt,930.1,3.4,7.3,unsafe
+Water + lots of Salt,1020.6,3.8,7.5,unsafe
+Water + lots of Salt,1100,3.1,7.2,unsafe
+Water + Salt,1260.9,3.7,7.4,unsafe
+Water + Salt,1160.4,3.3,7.3,unsafe
+Water + Salt,980.2,3.9,7.5,unsafe
+Water + Salt,992.7,3.5,7.4,unsafe
