@@ -30,163 +30,62 @@
             padding: 20px;
         }
 
-        .app-container {
-            width: 100%;
-            max-width: 400px;
-        }
+        .app-container { width: 100%; max-width: 400px; }
 
         /* Header */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
         h1 { margin: 0; font-size: 1.25rem; font-weight: 800; color: var(--primary); }
-        .connection-dot {
-            height: 10px; width: 10px; background-color: #cbd5e1;
-            border-radius: 50%; display: inline-block;
-        }
+        .connection-dot { height: 10px; width: 10px; background-color: #cbd5e1; border-radius: 50%; display: inline-block; }
         .connected .connection-dot { background-color: var(--safe); box-shadow: 0 0 8px var(--safe); }
 
         /* Main Result Circle */
         .result-card {
-            background: var(--card-bg);
-            border-radius: 24px;
-            padding: 30px;
-            text-align: center;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            margin-bottom: 20px;
-            transition: all 0.3s ease;
+            background: var(--card-bg); border-radius: 24px; padding: 30px; text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); margin-bottom: 20px; transition: all 0.3s ease;
         }
-        
         .status-text { font-size: 2.5rem; font-weight: 900; margin: 10px 0; color: #cbd5e1; }
         .confidence { font-size: 0.9rem; color: #94a3b8; font-weight: 600; }
         .advice { font-size: 1rem; margin-top: 15px; color: var(--text-main); font-weight: 500; }
 
         /* Data Grid */
-        .metrics-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .metric-card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 15px 10px;
-            text-align: center;
-            box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.05);
-        }
+        .metrics-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .metric-card { background: var(--card-bg); border-radius: 16px; padding: 15px 10px; text-align: center; box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.05); }
         .metric-value { font-size: 1.2rem; font-weight: 700; color: var(--primary); }
         .metric-label { font-size: 0.75rem; color: #64748b; margin-top: 5px; }
 
         /* Connect Button */
         button {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            padding: 16px;
-            width: 100%;
-            font-size: 1rem;
-            border-radius: 16px;
-            cursor: pointer;
-            font-weight: 600;
-            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
-            transition: transform 0.1s;
+            background-color: var(--primary); color: white; border: none; padding: 16px; width: 100%; font-size: 1rem;
+            border-radius: 16px; cursor: pointer; font-weight: 600; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
         }
-        button:active { transform: scale(0.98); }
         button:disabled { background-color: #cbd5e1; cursor: not-allowed; box-shadow: none; }
 
-        /* DEBUG CONSOLE */
-        .debug-console {
-            margin-top: 30px;
-            background: #1e1e1e;
-            color: #00ff00;
-            font-family: monospace;
-            font-size: 0.75rem;
-            padding: 15px;
-            border-radius: 12px;
-            width: 100%;
-            height: 150px;
-            overflow-y: auto;
-            text-align: left;
-            border: 2px solid #333;
-            box-shadow: inset 0 0 10px #000;
-        }
-
         /* History Section */
-        .history-section {
-            margin-top: 30px;
-            width: 100%;
-        }
-        .history-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
+        .history-section { margin-top: 30px; width: 100%; }
+        .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .history-title { font-weight: 700; color: var(--primary); }
-        .history-actions button {
-            width: auto;
-            padding: 5px 12px;
-            font-size: 0.75rem;
-            background: transparent;
-            color: var(--primary);
-            border: 1px solid var(--primary);
-            box-shadow: none;
-            margin-left: 5px;
-        }
-
-        .history-list {
-            background: var(--card-bg);
-            border-radius: 16px;
-            max-height: 300px;
-            overflow-y: auto;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-        }
-        
-        .history-item {
-            padding: 12px 15px;
-            border-bottom: 1px solid #f1f5f9;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.85rem;
-        }
+        .history-actions button { width: auto; padding: 5px 12px; font-size: 0.75rem; background: transparent; color: var(--primary); border: 1px solid var(--primary); box-shadow: none; margin-left: 5px; }
+        .history-list { background: var(--card-bg); border-radius: 16px; max-height: 300px; overflow-y: auto; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+        .history-item { padding: 12px 15px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; }
         .history-item:last-child { border-bottom: none; }
-        
         .h-time { color: var(--text-light); font-size: 0.75rem; display: block; margin-bottom: 2px;}
         .h-result { font-weight: 700; }
         .h-data { font-size: 0.75rem; color: var(--text-main); }
-        
-        .badge {
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
+        .badge { padding: 2px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
         .bg-safe { background: #dcfce7; color: #166534; }
         .bg-tap { background: #e0f2fe; color: #075985; }
         .bg-unsafe { background: #fee2e2; color: #991b1b; }
         .bg-uncertain { background: #fef9c3; color: #854d0e; }
 
-
         /* State Styles */
         .state-safe .result-card { border: 2px solid var(--safe); background: #f0fdf4; }
         .state-safe .status-text { color: var(--safe); }
-        
         .state-tap .result-card { border: 2px solid var(--tap); background: #f0f9ff; }
         .state-tap .status-text { color: var(--tap); }
-
         .state-unsafe .result-card { border: 2px solid var(--unsafe); background: #fef2f2; }
         .state-unsafe .status-text { color: var(--unsafe); }
-
         .state-uncertain .result-card { border: 2px solid var(--uncertain); background: #fefce8; }
         .state-uncertain .status-text { color: var(--uncertain); }
-
     </style>
 </head>
 <body>
@@ -204,28 +103,13 @@
         </div>
 
         <div class="metrics-grid">
-            <div class="metric-card">
-                <div class="metric-value" id="valTDS">--</div>
-                <div class="metric-label">TDS (ppm)</div>
-            </div>
-            <div class="metric-card">
-                <div class="metric-value" id="valTurb">--</div>
-                <div class="metric-label">Turbidity</div>
-            </div>
-            <div class="metric-card">
-                <div class="metric-value" id="valPH">--</div>
-                <div class="metric-label">pH Level</div>
-            </div>
+            <div class="metric-card"><div class="metric-value" id="valTDS">--</div><div class="metric-label">TDS (ppm)</div></div>
+            <div class="metric-card"><div class="metric-value" id="valTurb">--</div><div class="metric-label">Turbidity</div></div>
+            <div class="metric-card"><div class="metric-value" id="valPH">--</div><div class="metric-label">pH Level</div></div>
         </div>
 
         <button id="connectBtn" onclick="connectToDevice()">Connect Device</button>
 
-        <!-- DEBUG CONSOLE (Keep for now to confirm fix) -->
-        <div class="debug-console" id="debugLog">
-            > Ready to connect...<br>
-        </div>
-
-        <!-- HISTORY SECTION -->
         <div class="history-section">
             <div class="history-header">
                 <div class="history-title">Data History</div>
@@ -244,31 +128,19 @@
         const SERVICE_UUID = "19b10000-e8f2-537e-4f6c-d104768a1214";
         const CHAR_UUID    = "19b10001-e8f2-537e-4f6c-d104768a1214";
         let bluetoothDevice;
-        
-        // BUFFER for incoming data chunks
-        let dataBuffer = "";
+        let dataBuffer = ""; // Global buffer to hold incoming chunks
 
-        // Custom Logger Function
-        function log(msg) {
-            const consoleDiv = document.getElementById("debugLog");
-            consoleDiv.innerHTML += `> ${msg}<br>`;
-            consoleDiv.scrollTop = consoleDiv.scrollHeight; 
-            console.log(msg);
-        }
-        
-        // Load history from local storage
+        // Load history
         let dataHistory = JSON.parse(localStorage.getItem('waterDataHistory')) || [];
         renderHistory();
 
         async function connectToDevice() {
             try {
-                log("Scanning...");
                 bluetoothDevice = await navigator.bluetooth.requestDevice({
                     filters: [{ services: [SERVICE_UUID] }] 
                 });
                 
                 bluetoothDevice.addEventListener('gattserverdisconnected', onDisconnected);
-                log("Connecting...");
                 const server = await bluetoothDevice.gatt.connect();
                 const service = await server.getPrimaryService(SERVICE_UUID);
                 const characteristic = await service.getCharacteristic(CHAR_UUID);
@@ -280,86 +152,74 @@
                 document.getElementById("connectBtn").innerText = "Connected";
                 document.getElementById("connectBtn").disabled = true;
                 document.getElementById("adviceText").innerText = "Press button on device to scan";
-                log("CONNECTED! Waiting for data...");
 
             } catch (error) {
-                log("ERROR: " + error);
+                console.log(error);
+                alert("Connection failed. Make sure device is on.");
             }
         }
 
         function handleData(event) {
-            // 1. Decode current chunk
             const chunk = new TextDecoder().decode(event.target.value);
-            log("Rx Chunk: " + chunk); 
+            console.log("Chunk received:", chunk);
             
-            // --- SELF HEALING LOGIC ---
-            // If the chunk looks like the START of a new JSON object ('{'),
-            // but we already have data in the buffer, it means the previous
-            // message was incomplete/corrupted. We must clear it to avoid a jam.
-            if (chunk.trim().startsWith("{")) {
-                if (dataBuffer.length > 0) {
-                    log("Warning: Cleared corrupted buffer.");
-                }
-                dataBuffer = ""; // Reset buffer for new message
-            }
-            // --------------------------
-
-            // 2. Append to Buffer
+            // Add chunk to buffer
             dataBuffer += chunk;
 
-            // 3. Try to Parse
-            try {
-                // Only try parsing if it looks complete (ends with '}')
-                if (dataBuffer.trim().endsWith("}")) {
-                    const data = JSON.parse(dataBuffer);
-                    
-                    // IF WE REACH HERE, PARSING SUCCEEDED
-                    log("PARSED OK: " + data.lbl);
-                    updateUI(data);
-                    saveReading(data);
-                    
-                    // Clear buffer only AFTER successful parse/save
-                    dataBuffer = ""; 
+            // Check if buffer contains a complete message (marked by newline)
+            if (dataBuffer.includes("\n")) {
+                const parts = dataBuffer.split("\n");
+                
+                // Loop through all complete messages (usually just one)
+                for (let i = 0; i < parts.length - 1; i++) {
+                    processMessage(parts[i]);
                 }
-            } catch (e) {
-                // JSON is not complete yet, wait for next chunk...
+                
+                // Keep the remainder (incomplete part) in the buffer
+                dataBuffer = parts[parts.length - 1];
             }
         }
 
-        function updateUI(data) {
-            // Update Text
-            document.getElementById("resultText").innerText = data.lbl.toUpperCase();
-            document.getElementById("confText").innerText = `AI CONFIDENCE: ${Math.round(data.conf * 100)}%`;
-            document.getElementById("valTDS").innerText = data.tds;
-            document.getElementById("valTurb").innerText = data.turb;
-            document.getElementById("valPH").innerText = data.ph;
+        function processMessage(jsonStr) {
+            try {
+                const data = JSON.parse(jsonStr);
+                
+                // Update UI
+                document.getElementById("resultText").innerText = data.lbl.toUpperCase();
+                document.getElementById("confText").innerText = `AI CONFIDENCE: ${Math.round(data.conf * 100)}%`;
+                document.getElementById("valTDS").innerText = data.tds;
+                document.getElementById("valTurb").innerText = data.turb;
+                document.getElementById("valPH").innerText = data.ph;
 
-            // Visuals
-            const body = document.body;
-            body.className = "connected";
-            
-            let advice = "";
-            if (data.lbl === "safe") {
-                body.classList.add("state-safe");
-                advice = "✔ Safe for consumption.";
-            } else if (data.lbl === "tap") {
-                body.classList.add("state-tap");
-                advice = "ℹ Standard tap water.";
-            } else if (data.lbl === "unsafe") {
-                body.classList.add("state-unsafe");
-                advice = "⚠ DO NOT DRINK. Filtration required.";
-            } else {
-                body.classList.add("state-uncertain");
-                advice = "❓ Analysis inconclusive. Test again.";
+                // Visuals
+                const body = document.body;
+                body.className = "connected"; 
+                
+                let advice = "";
+                if (data.lbl === "safe") {
+                    body.classList.add("state-safe");
+                    advice = "✔ Safe for consumption.";
+                } else if (data.lbl === "tap") {
+                    body.classList.add("state-tap");
+                    advice = "ℹ Standard tap water.";
+                } else if (data.lbl === "unsafe") {
+                    body.classList.add("state-unsafe");
+                    advice = "⚠ DO NOT DRINK.";
+                } else {
+                    body.classList.add("state-uncertain");
+                    advice = "❓ Analysis inconclusive.";
+                }
+                document.getElementById("adviceText").innerText = advice;
+
+                saveReading(data);
+
+            } catch (e) {
+                console.error("JSON Parsing failed for:", jsonStr);
             }
-            document.getElementById("adviceText").innerText = advice;
         }
 
         function saveReading(data) {
-            const reading = {
-                timestamp: new Date().toLocaleString(),
-                ...data
-            };
+            const reading = { timestamp: new Date().toLocaleString(), ...data };
             dataHistory.unshift(reading);
             if (dataHistory.length > 50) dataHistory.pop();
             localStorage.setItem('waterDataHistory', JSON.stringify(dataHistory));
@@ -369,29 +229,21 @@
         function renderHistory() {
             const list = document.getElementById('historyList');
             list.innerHTML = "";
-
             if (dataHistory.length === 0) {
                 list.innerHTML = '<div style="padding: 20px; text-align: center; color: #94a3b8; font-size: 0.8rem;">No readings yet</div>';
                 return;
             }
-
             dataHistory.forEach(item => {
                 const div = document.createElement('div');
                 div.className = 'history-item';
-                
                 let badgeClass = "bg-uncertain";
                 if(item.lbl === "safe") badgeClass = "bg-safe";
                 if(item.lbl === "tap") badgeClass = "bg-tap";
                 if(item.lbl === "unsafe") badgeClass = "bg-unsafe";
 
                 div.innerHTML = `
-                    <div>
-                        <span class="h-time">${item.timestamp}</span>
-                        <span class="badge ${badgeClass}">${item.lbl}</span>
-                    </div>
-                    <div class="h-data">
-                        TDS: ${item.tds} | Turb: ${item.turb} | pH: ${item.ph}
-                    </div>
+                    <div><span class="h-time">${item.timestamp}</span><span class="badge ${badgeClass}">${item.lbl}</span></div>
+                    <div class="h-data">TDS: ${item.tds} | Turb: ${item.turb} | pH: ${item.ph}</div>
                 `;
                 list.appendChild(div);
             });
@@ -399,14 +251,10 @@
 
         function downloadCSV() {
             if (dataHistory.length === 0) return alert("No data to export!");
-            
-            let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += "Timestamp,Label,Confidence,TDS,Turbidity,pH\n"; 
-
+            let csvContent = "data:text/csv;charset=utf-8,Timestamp,Label,Confidence,TDS,Turbidity,pH\n"; 
             dataHistory.forEach(row => {
                 csvContent += `${row.timestamp},${row.lbl},${row.conf},${row.tds},${row.turb},${row.ph}\n`;
             });
-
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
             link.setAttribute("href", encodedUri);
@@ -434,7 +282,6 @@
             document.getElementById("valTDS").innerText = "--";
             document.getElementById("valTurb").innerText = "--";
             document.getElementById("valPH").innerText = "--";
-            log("Disconnected.");
         }
     </script>
 </body>
