@@ -111,9 +111,9 @@ Flash Firmware: Upload [FinalBleAI_Water_Classifier.ino](https://github.com/Shri
 
 Connect App: Open the Live Web App.
 
-Pair: Click "Connect" and select WaterAI.( Need to be re-connected for every reading)
+Pair: Click "Connect" and select WaterAI.( Need to be re-connected for every reading) You can also download a timestampped csv file for all reading all together for offline storage. A sample csv file has been added in Assets folder. 
 
-Test: Dip sensors in water and press the physical button.
+Test: Dip sensors in water and press the physical button. The data is sent in 20 charater packets at once through BLE to web app. 
 
 ## 🔮 Future Roadmap
 
