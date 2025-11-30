@@ -1,0 +1,57 @@
+/*
+ * FINAL HACKATHON CODE: Water Quality Station (Fixed)
+ * Hardware: XIAO nRF52840, pH (A0), Turbidity (A1)
+ * Wiring: Boost Converter (5V) -> Capacitor Bank -> Sensors
+ * Turbidity Protection: 4.7k resistor (top) + two 4.7k resistors (bottom)
+ */
+
+#include <Adafruit_TinyUSB.h>
+
+// Pin connection
+const int phPin = A2;
+
+// --- Calibiration Data---
+float phNeutral = 1.658; 
+float phSensitivity = 0.0736; 
+
+void setup() {
+  Serial.begin(9600);
+  analogReadResolution(12); // High precision mode
+}
+
+void loop() {
+  // --- READING pH ---
+  float phVolt = readMedian(phPin);
+  float phValue = 7.0 + ((phNeutral - phVolt) / phSensitivity);
+  
+  // Clamp boundaries
+  if(phValue < 0) phValue = 0;
+  if(phValue > 14) phValue = 14;
+
+  // --- DASHBOARD OUTPUT ---
+  Serial.println("=============================");
+  Serial.print("pH Level:      "); Serial.println(phValue, 2);
+  Serial.print("Voltage (pH):  "); Serial.print(phVolt, 2); Serial.println(" V");
+
+  delay(2000);
+}
+
+// Function to smooth out signal noise when 5V is comming from boost convertor without a capacitor.
+float readMedian(int pin) {
+  float samples[15];
+  for (int i = 0; i < 15; i++) {
+    samples[i] = analogRead(pin) * (3.3 / 4095.0);
+    delay(2);
+  }
+  // Sort and pick middle value
+  for (int i = 0; i < 14; i++) {
+    for (int j = i + 1; j < 15; j++) {
+      if (samples[i] > samples[j]) {
+        float temp = samples[i];
+        samples[i] = samples[j];
+        samples[j] = temp;
+      }
+    }
+  }
+  return samples[7];
+}
